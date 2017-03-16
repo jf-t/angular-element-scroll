@@ -23,6 +23,10 @@ export default class ElementScrollEvent {
         this[lab] = val;
     }
 
+    stop() {
+        clearInterval(this.intId);
+    }
+
     private isEnd(end) {
         alert("Your end point does not exist");
     }
