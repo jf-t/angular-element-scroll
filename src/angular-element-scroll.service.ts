@@ -4,7 +4,7 @@ import { ElementScrollEvent } from './angular-element-scroll-event';
 
 
 interface ElementScrollService {
-    events: Array<ElementScrollEvent>
+    events: Object
 }
 
 @Injectable()
@@ -13,9 +13,10 @@ export class ElementScrollService {
     addEvent(elementScrollEvent: ElementScrollEvent) {
         if (events.includes(elementScrollEvent)) {
             console.log('You already added this event to the queue');
+
             return events.indexOf(elementScrollEvent);
         } else {
-            this.events.push(elementScrollEvent);
+            this.events[elementScrollEvent.title] = elementScrollEvent;
             return events.length - 1;
         }
     }
@@ -23,6 +24,7 @@ export class ElementScrollService {
     perform(input: any) {
         if (typeof(input) === 'ElementScrollEvent') {
             this.performNew(input);
+
         } else if (typeof(input) === 'number') {
             this.performStored(input)
         } else {
@@ -41,6 +43,7 @@ export class ElementScrollService {
 
     private runEvent(event: ElementScrollEvent) {
         // this is where the logic will live
+
     }
 
 }
