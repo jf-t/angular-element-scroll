@@ -15,7 +15,8 @@ export default class ElementScrollEvent {
         this.speed = obj.speed ? obj.speed : 25;
         this.scrollEvent = obj.scrollEvent ? obj.scrollEvent : false;
         this.clickEvent = obj.clickEvent ? obj.clickEvent : false;
-        this.title = obj.title ? obj.title : this.end.innerText.split(" ")[0]
+        this.title = obj.title ? obj.title : this.end.innerText.split(" ")[0];
+        this.offset = obj.offset ? obj.offset : 0;
     }
 
     set(lab, val) {
