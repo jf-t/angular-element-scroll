@@ -44,6 +44,25 @@ export class ElementScrollService {
     private runEvent(event: ElementScrollEvent) {
         // this is where the logic will live
 
+
+        /*
+            How this function will work:
+                1. gets the top position of the user and the event.end DOM element
+                    to get the user's: window.pageYOffset
+                    to get the element's: element.getBoundingClientRect()
+
+                2. calculate distance between the two and store that as a variable
+
+                3. create an interval using the set AngularElementScroll speed
+
+                4. create the two events if the booleans are true:
+                    scrollEvent: stop the scrolling if the user scrolls
+                    clickEvent: stop the scrolling if the user clicks
+                        (these both default to false)
+
+                5. start the interval of the event with the two stop events
+
+         */
     }
 
 }
