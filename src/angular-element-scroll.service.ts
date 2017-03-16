@@ -2,24 +2,21 @@ import { Injectable } from '@angular/core';
 
 import { ElementScrollEvent } from './angular-element-scroll-event';
 
-
-interface ElementScrollService {
-    events: Object
-
-}
-
 @Injectable()
 export class ElementScrollService {
+    events: Object;
+
+    constructor() {
+        this.events = {};
+    }
 
     addEvent(elementScrollEvent: ElementScrollEvent) {
-        if (events.includes(elementScrollEvent)) {
+        if (this.events[elementScrollEvent.title]) {
             console.log('You already added this event to the queue');
-
-            return events.indexOf(elementScrollEvent);
         } else {
             this.events[elementScrollEvent.title] = elementScrollEvent;
-            return events.length - 1;
         }
+        return elementScrollEvent.title;
     }
 
 
@@ -27,7 +24,7 @@ export class ElementScrollService {
         if (typeof(input) === 'ElementScrollEvent') {
             this.performNew(input);
 
-        } else if (typeof(input) === 'number') {
+        } else if (typeof(input) === 'string') {
             this.performStored(input)
         } else {
             console.log('Error, input not known');
@@ -35,8 +32,8 @@ export class ElementScrollService {
     }
 
 
-    performStored(index: number) {
-        let elementScrollEvent = events[index];
+    performStored(index: string) {
+        let elementScrollEvent = this.events[index];
         this.runEvent(elementScrollEvent);
     }
 
@@ -47,25 +44,37 @@ export class ElementScrollService {
 
 
     private runEvent(event: ElementScrollEvent) {
-         let endHeight = event.end.getBoundingClientRect();
-         let change = (event.speed * -1);
+        let endHeight = event.end.getBoundingClientRect().top;
+        let change = (event.speed);
 
+        //  gets if page needs to go up or down
+        let up: boolean;
+        if (endHeight > window.scrollY) {
+            up = true;
+        } else {
+            up = false;
+        }
 
-         if (event.scrollEvent) {
-             document.addEventListener('scroll', event.stop);
-         }
+        if (event.scrollEvent) {
+            document.addEventListener('scroll', event.stop);
+        }
 
-         if (event.clickEvent) {
-             document.addEventListener('click', event.stop);
-         }
+        if (event.clickEvent) {
+            document.addEventListener('click', event.stop);
+        }
 
-         event.intId = setInterval(() => {
-             window.scroll(0, window.scrollY + change);
-
-             if (window.scrollY === endHeight) {
-                 stopEvent(event);
-             }
-         }, 10)
+        event.intId = setInterval(() => {
+            window.scroll(0, window.scrollY + change);
+            if (up) {
+                if (window.scrollY >= (endHeight + event.offset)) {
+                    this.stopEvent(event);
+                }
+            } else {
+                if (window.scrollY <= (endHeight + event.offset)) {
+                    this.stopEvent(event);
+                }
+            }
+        }, 10);
     }
 
     private stopEvent(event) {
