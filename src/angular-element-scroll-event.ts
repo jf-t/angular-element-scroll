@@ -5,6 +5,7 @@ interface ScrollObj {
     clickEvent?: boolean;
     title?: string;
     offset?: number;
+    delay?: number;
 }
 
 export class ElementScrollEvent {
@@ -15,6 +16,7 @@ export class ElementScrollEvent {
     title: string;
     offset: number;
     intId: Timer;
+    delay: number;
 
 
     constructor( obj: ScrollObj ) {
@@ -26,6 +28,7 @@ export class ElementScrollEvent {
         this.title = obj.title ? obj.title : "";
         this.offset = obj.offset ? obj.offset : 0;
         this.intId = null;
+        this.delay = obj.delay ? obj.delay : 0;
     }
 
     set(lab, val) {
