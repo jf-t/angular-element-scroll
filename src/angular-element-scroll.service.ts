@@ -5,6 +5,7 @@ import { ElementScrollEvent } from './angular-element-scroll-event';
 
 interface ElementScrollService {
     events: Object
+
 }
 
 @Injectable()
@@ -21,6 +22,7 @@ export class ElementScrollService {
         }
     }
 
+
     perform(input: any) {
         if (typeof(input) === 'ElementScrollEvent') {
             this.performNew(input);
@@ -32,37 +34,49 @@ export class ElementScrollService {
         }
     }
 
+
     performStored(index: number) {
         let elementScrollEvent = events[index];
         this.runEvent(elementScrollEvent);
     }
 
+
     performNew(elementScrollEvent: ElementScrollEvent) {
         this.runEvent(elementScrollEvent);
     }
 
+
     private runEvent(event: ElementScrollEvent) {
-        // this is where the logic will live
+         let endHeight = event.end.getBoundingClientRect();
+         let change = (event.speed * -1);
 
 
-        /*
-            How this function will work:
-                1. gets the top position of the user and the event.end DOM element
-                    to get the user's: window.pageYOffset
-                    to get the element's: element.getBoundingClientRect()
+         if (event.scrollEvent) {
+             document.addEventListener('scroll', event.stop);
+         }
 
-                2. calculate distance between the two and store that as a variable
+         if (event.clickEvent) {
+             document.addEventListener('click', event.stop);
+         }
 
-                3. create an interval using the set AngularElementScroll speed
+         event.intId = setInterval(() => {
+             window.scroll(0, window.scrollY + change);
 
-                4. create the two events if the booleans are true:
-                    scrollEvent: stop the scrolling if the user scrolls
-                    clickEvent: stop the scrolling if the user clicks
-                        (these both default to false)
+             if (window.scrollY === endHeight) {
+                 stopEvent(event);
+             }
+         }, 10)
+    }
 
-                5. start the interval of the event with the two stop events
+    private stopEvent(event) {
+        event.stop();
 
-         */
+        if (event.scrollEvent) {
+            document.removeEventListener('scroll', event.stop);
+        }
+        if (event.clickEvent) {
+            document.removeEventListener('click', event.stop);
+        }
     }
 
 }
