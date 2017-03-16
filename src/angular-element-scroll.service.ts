@@ -4,27 +4,26 @@ import { ElementScrollEvent } from './angular-element-scroll-event';
 
 @Injectable()
 export class ElementScrollService {
-    events: Object;
+    events: Array<ElementScrollEvent>;
 
     constructor() {
-        this.events = {};
+        this.events = [];
     }
 
     addEvent(elementScrollEvent: ElementScrollEvent) {
-        if (this.events[elementScrollEvent.title]) {
-            console.log('You already added this event to the queue');
+        if (this.eventsIndex(elementScrollEvent) !== -1) {
+            return this.eventsIndex(elementScrollEvent);
         } else {
-            this.events[elementScrollEvent.title] = elementScrollEvent;
+            this.events.push(elementScrollEvent);
+            return (this.events.length - 1);
         }
-        return elementScrollEvent.title;
     }
 
 
     perform(input: any) {
         if (typeof(input) === 'ElementScrollEvent') {
             this.performNew(input);
-
-        } else if (typeof(input) === 'string') {
+        } else if (typeof(input) === 'number') {
             this.performStored(input)
         } else {
             console.log('Error, input not known');
@@ -32,18 +31,27 @@ export class ElementScrollService {
     }
 
 
-    performStored(index: string) {
+    performStored(index: number) {
         let elementScrollEvent = this.events[index];
-        this.runEvent(elementScrollEvent);
+        this.runDelay(elementScrollEvent);
     }
 
 
     performNew(elementScrollEvent: ElementScrollEvent) {
-        this.runEvent(elementScrollEvent);
+        this.runDelay(elementScrollEvent);
+    }
+
+    private runDelay(event) {
+        setTimeout(() => this.runEvent(event), event.delay);
     }
 
 
     private runEvent(event: ElementScrollEvent) {
+        if (event.end.offsetTop === 0) {
+            this.runDelay(event);
+            return false;
+        }
+
         let endHeight = event.end.getBoundingClientRect().top;
         let change = (event.speed);
 
@@ -66,11 +74,11 @@ export class ElementScrollService {
         event.intId = setInterval(() => {
             window.scroll(0, window.scrollY + change);
             if (up) {
-                if (window.scrollY >= (endHeight + event.offset)) {
+                if (window.scrollY >= (endHeight - event.offset)) {
                     this.stopEvent(event);
                 }
             } else {
-                if (window.scrollY <= (endHeight + event.offset)) {
+                if (window.scrollY <= (endHeight - event.offset)) {
                     this.stopEvent(event);
                 }
             }
@@ -86,6 +94,18 @@ export class ElementScrollService {
         if (event.clickEvent) {
             document.removeEventListener('click', event.stop);
         }
+    }
+
+    private eventsIndex(event: ElementScrollEvent) {
+        let flag: number = -1;
+
+        this.events.forEach((scrollEvent, idx) => {
+            if (scrollEvent.end === event.end) {
+                flag = idx;
+            }
+        });
+
+        return flag;
     }
 
 }
