@@ -3,7 +3,8 @@ interface ElementScrollEvent {
     speed: number,
     scrollEvent: boolean,
     clickEvent: boolean,
-    title: string
+    title: string,
+    offset: number
 }
 
 export default class ElementScrollEvent {
