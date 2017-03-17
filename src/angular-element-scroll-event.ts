@@ -6,6 +6,7 @@ interface ScrollObj {
     title?: string;
     offset?: number;
     delay?: number;
+    exactSpot?: boolean;
 }
 
 export class ElementScrollEvent {
@@ -15,8 +16,9 @@ export class ElementScrollEvent {
     clickEvent: boolean;
     title: string;
     offset: number;
-    intId: Timer;
+    intId: number;
     delay: number;
+    exactSpot: boolean;
 
 
     constructor( obj: ScrollObj ) {
@@ -29,6 +31,7 @@ export class ElementScrollEvent {
         this.offset = obj.offset ? obj.offset : 0;
         this.intId = null;
         this.delay = obj.delay ? obj.delay : 0;
+        this.exactSpot = obj.exactSpot ? obj.exactSpot : false;
     }
 
     set(lab, val) {
@@ -36,6 +39,14 @@ export class ElementScrollEvent {
     }
 
     stop() {
+        if (this.exactSpot) {
+            window.scroll(0, window.scrollY + this.end.getBoundingClientRect().top - this.offset);
+        }
+
+        clearInterval(this.intId);
+    }
+
+    event() {
         clearInterval(this.intId);
     }
 
