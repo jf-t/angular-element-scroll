@@ -1,0 +1,15 @@
+{
+    "compilerOptions": {
+        "module": "commonjs",
+        "target": "es5",
+        "inlineSources": false,
+        "declaration": false,
+        "experimentalDecorators": true,
+        "emitDecoratorMetadata": true,
+        "stripInternal": true,
+        "lib": ["es2017", "dom"]
+    },
+    "files": [
+        "index.ts"
+    ]
+}

@@ -21,13 +21,16 @@ export class ElementScrollService {
 
 
     perform(input: any) {
-        if (typeof(input) === 'ElementScrollEvent') {
-            this.performNew(input);
-        } else if (typeof(input) === 'number') {
-            this.performStored(input)
-        } else {
-            console.log('Error, input not known');
-        }
+        // let inputType = typeof(input);
+        // if (inputType === 'ElementScrollEvent') {
+        //     this.performNew(input);
+        // } else if (inputType === 'number') {
+        //     this.performStored(input)
+        // } else {
+        //     console.log('Error, input not known');
+        // }
+
+        this.performNew(input);
     }
 
 
