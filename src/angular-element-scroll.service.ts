@@ -65,7 +65,7 @@ export class ElementScrollService {
         }
 
         if (event.scrollEvent) {
-            document.addEventListener('scroll', event.event.bind(event));
+            document.addEventListener('mousewheel', event.event.bind(event));
         }
 
         if (event.clickEvent) {
@@ -91,12 +91,11 @@ export class ElementScrollService {
 
     private stopEvent(event) {
         event.stop();
-
         if (event.scrollEvent) {
-            document.removeEventListener('scroll', event.stop);
+            document.removeEventListener('mousewheel', event.event.bind(event));
         }
         if (event.clickEvent) {
-            document.removeEventListener('click', event.stop);
+            document.removeEventListener('click', event.event.bind(event));
         }
     }
 
