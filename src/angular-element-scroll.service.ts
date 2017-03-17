@@ -47,7 +47,7 @@ export class ElementScrollService {
 
 
     private runEvent(event: ElementScrollEvent) {
-        if (event.end.offsetTop === 0) {
+        if (event.end.getBoundingClientRect().top === 0) {
             this.runDelay(event);
             return false;
         }
@@ -56,29 +56,33 @@ export class ElementScrollService {
         let change = (event.speed);
 
         //  gets if page needs to go up or down
-        let up: boolean;
-        if (endHeight > window.scrollY) {
-            up = true;
+        let down: boolean;
+        if (endHeight > 0) {
+            down = true;
         } else {
-            up = false;
+            change *= -1;
+            down = false;
         }
 
         if (event.scrollEvent) {
-            document.addEventListener('scroll', event.stop);
+            document.addEventListener('scroll', event.event.bind(event));
         }
 
         if (event.clickEvent) {
-            document.addEventListener('click', event.stop);
+            document.addEventListener('click', event.event.bind(event));
         }
 
-        event.intId = setInterval(() => {
+        let scrollY = 0;
+        event.intId = window.setInterval(() => {
             window.scroll(0, window.scrollY + change);
-            if (up) {
-                if (window.scrollY >= (endHeight - event.offset)) {
+            scrollY += change;
+
+            if (down) {
+                if (scrollY >= (endHeight - event.offset)) {
                     this.stopEvent(event);
                 }
             } else {
-                if (window.scrollY <= (endHeight - event.offset)) {
+                if (scrollY <= (endHeight - event.offset)) {
                     this.stopEvent(event);
                 }
             }
