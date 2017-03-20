@@ -44,7 +44,7 @@ export class ElementScrollService {
         this.runDelay(elementScrollEvent);
     }
 
-    private runDelay(event) {
+    private runDelay(event:ElementScrollEvent) {
         setTimeout(() => this.runEvent(event), event.delay);
     }
 
@@ -92,7 +92,7 @@ export class ElementScrollService {
         }, 10);
     }
 
-    private stopEvent(event) {
+    private stopEvent(event: ElementScrollEvent) {
         event.stop();
         if (event.scrollEvent) {
             document.removeEventListener('mousewheel', event.event.bind(event));

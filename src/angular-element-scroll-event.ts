@@ -19,6 +19,7 @@ export class ElementScrollEvent {
     intId: number;
     delay: number;
     exactSpot: boolean;
+    [key: string]: any;
 
 
     constructor( obj: ScrollObj ) {
@@ -34,7 +35,7 @@ export class ElementScrollEvent {
         this.exactSpot = obj.exactSpot ? obj.exactSpot : false;
     }
 
-    set(lab, val) {
+    set(lab: string, val:number) {
         this[lab] = val;
     }
 
@@ -50,7 +51,7 @@ export class ElementScrollEvent {
         clearInterval(this.intId);
     }
 
-    private isEnd(end) {
+    private isEnd(end:any) {
         if (!(end instanceof HTMLElement)) {
             alert("Your end point does not exist");
         } else {
