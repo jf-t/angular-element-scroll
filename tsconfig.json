@@ -7,7 +7,8 @@
         "experimentalDecorators": true,
         "emitDecoratorMetadata": true,
         "stripInternal": true,
-        "lib": ["es2017", "dom"]
+        "lib": ["es2017", "dom"],
+        "noImplicitAny": true
     },
     "files": [
         "index.ts"
