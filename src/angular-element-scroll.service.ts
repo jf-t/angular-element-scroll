@@ -42,6 +42,14 @@ export class ElementScrollService {
         this.runDelay(elementScrollEvent);
     }
 
+    clearEvents() {
+        this.events = {};
+    }
+
+    removeEvent(title: string) {
+        delete this.events[title];
+    }
+
     private runDelay(event:ElementScrollEvent) {
         setTimeout(() => this.runEvent(event), event.delay);
     }
