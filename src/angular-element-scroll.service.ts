@@ -35,7 +35,7 @@ export class ElementScrollService {
 
 
     performStored(index: number) {
-        let elementScrollEvent = this.events[index];
+        let elementScrollEvent: ElementScrollEvent = Object.assign({}, this.events[index]);
         this.runDelay(elementScrollEvent);
     }
 
