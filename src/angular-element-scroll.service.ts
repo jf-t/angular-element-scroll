@@ -30,7 +30,7 @@ export class ElementScrollService {
         //     console.log('Error, input not known');
         // }
 
-        this.performNew(input);
+        this.performStored(input);
     }
 
 
