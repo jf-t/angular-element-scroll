@@ -4,19 +4,17 @@ import { ElementScrollEvent } from './angular-element-scroll-event';
 
 @Injectable()
 export class ElementScrollService {
-    events: Array<ElementScrollEvent>;
+    events: Object;
 
     constructor() {
-        this.events = [];
+        this.events = {};
     }
 
-    addEvent(elementScrollEvent: ElementScrollEvent) {
-        if (this.eventsIndex(elementScrollEvent) !== -1) {
-            return this.eventsIndex(elementScrollEvent);
-        } else {
-            this.events.push(elementScrollEvent);
-            return (this.events.length - 1);
+    addEvent(event: ElementScrollEvent) {
+        if (!this.events.hasOwnProperty(event.title)) {
+            this.events[event.title] =  event;
         }
+        return event.title;
     }
 
 
@@ -34,8 +32,8 @@ export class ElementScrollService {
     }
 
 
-    performStored(index: number) {
-        let elementScrollEvent: ElementScrollEvent = Object.assign({}, this.events[index]);
+    performStored(title: string) {
+        let elementScrollEvent: ElementScrollEvent = this.events[title];
         this.runDelay(elementScrollEvent);
     }
 
@@ -102,16 +100,16 @@ export class ElementScrollService {
         }
     }
 
-    private eventsIndex(event: ElementScrollEvent) {
-        let flag: number = -1;
-
-        this.events.forEach((scrollEvent, idx) => {
-            if (scrollEvent.end === event.end) {
-                flag = idx;
-            }
-        });
-
-        return flag;
-    }
+    // private eventsIndex(event: ElementScrollEvent) {
+    //     let flag: number = -1;
+    //
+    //     this.events.forEach((scrollEvent, idx) => {
+    //         if (scrollEvent.end === event.end) {
+    //             flag = idx;
+    //         }
+    //     });
+    //
+    //     return flag;
+    // }
 
 }
