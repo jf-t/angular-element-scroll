@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, NgZone } from '@angular/core';
 
 import { ElementScrollEvent } from './angular-element-scroll-event';
 
@@ -6,7 +6,9 @@ import { ElementScrollEvent } from './angular-element-scroll-event';
 export class ElementScrollService {
     events: Object;
 
-    constructor() {
+    constructor(
+        private zone: NgZone
+    ) {
         this.events = {};
     }
 
@@ -56,56 +58,60 @@ export class ElementScrollService {
 
 
     private runEvent(event: ElementScrollEvent) {
-        if (event.end.getBoundingClientRect().top === 0) {
-            this.runDelay(event);
-            return false;
-        }
-
-        let endHeight = event.end.getBoundingClientRect().top;
-        let change = (event.speed);
-
-        //  gets if page needs to go up or down
-        let down: boolean;
-        if (endHeight > 0) {
-            down = true;
-        } else {
-            change *= -1;
-            down = false;
-        }
-
-        if (event.scrollEvent) {
-            document.addEventListener('mousewheel', event.event.bind(event));
-        }
-
-        if (event.clickEvent) {
-            document.addEventListener('click', event.event.bind(event));
-        }
-
-        let scrollY = 0;
-        event.intId = window.setInterval(() => {
-            window.scroll(0, window.scrollY + change);
-            scrollY += change;
-
-            if (down) {
-                if (scrollY >= (endHeight - event.offset)) {
-                    this.stopEvent(event);
-                }
-            } else {
-                if (scrollY <= (endHeight - event.offset)) {
-                    this.stopEvent(event);
-                }
+        this.zone.runOutsideAngular(() => {
+            if (event.end.getBoundingClientRect().top === 0) {
+                this.runDelay(event);
+                return false;
             }
-        }, 10);
+
+            let endHeight = event.end.getBoundingClientRect().top;
+            let change = (event.speed);
+
+            //  gets if page needs to go up or down
+            let down: boolean;
+            if (endHeight > 0) {
+                down = true;
+            } else {
+                change *= -1;
+                down = false;
+            }
+
+            if (event.scrollEvent) {
+                document.addEventListener('mousewheel', event.event.bind(event));
+            }
+
+            if (event.clickEvent) {
+                document.addEventListener('click', event.event.bind(event));
+            }
+
+            let scrollY = 0;
+            event.intId = window.setInterval(() => {
+                window.scroll(0, window.scrollY + change);
+                scrollY += change;
+
+                if (down) {
+                    if (scrollY >= (endHeight - event.offset)) {
+                        this.stopEvent(event);
+                    }
+                } else {
+                    if (scrollY <= (endHeight - event.offset)) {
+                        this.stopEvent(event);
+                    }
+                }
+            }, 10);
+        });
     }
 
     private stopEvent(event: ElementScrollEvent) {
-        event.stop();
-        if (event.scrollEvent) {
-            document.removeEventListener('mousewheel', event.event.bind(event));
-        }
-        if (event.clickEvent) {
-            document.removeEventListener('click', event.event.bind(event));
-        }
+        this.zone.runOutsideAngular(() => {
+            event.stop();
+            if (event.scrollEvent) {
+                document.removeEventListener('mousewheel', event.event.bind(event));
+            }
+            if (event.clickEvent) {
+                document.removeEventListener('click', event.event.bind(event));
+            }
+        });
     }
 
     // private eventsIndex(event: ElementScrollEvent) {
