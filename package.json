@@ -2,11 +2,13 @@
   "name": "angular-element-scroll",
   "version": "0.0.1",
   "description": "Angular Element Scroll is a library used for animated scrolling directly to elements in Angular 2.",
-  "main": "index.js",
+  "main": "index",
   "module": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "tsc"
+    "clean": "rimraf bundle",
+    "bundle": "clean && rollup -c rollup.conf.js",
+    "postpublish": "gulp && npm run bundle"
   },
   "repository": {
     "type": "git",
@@ -20,18 +22,22 @@
   },
   "homepage": "https://github.com/jf-t/angular-element-scroll#readme",
   "dependencies": {
+    "@angular/core": "^2.4.10",
+    "@angular/compiler-cli": "^2.4.10",
     "@angular/common": "^2.4.10",
     "@angular/compiler": "^2.4.10",
+    "@types/node": "^7.0.8",
+    "rimraf": "^2.6.1",
+    "rollup": "^0.41.6",
     "rxjs": "^5.2.0",
-    "tsc": "^1.20150623.0",
     "zone.js": "^0.7.8"
   },
   "devDependencies": {
-    "@angular/compiler-cli": "^2.4.10",
-    "@angular/core": "^2.4.10",
+    "gulp": "^3.9.1",
+    "gulp-typescript": "^3.1.6",
     "typescript": "^2.2.1"
   },
   "peerDependencies": {
-      "@angular/core": "^2.4.10"
+    "@angular/core": "^2.4.10"
   }
 }
