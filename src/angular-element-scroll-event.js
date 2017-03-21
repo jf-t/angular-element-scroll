@@ -1,28 +1,6 @@
-interface ScrollObj {
-    end: HTMLElement;
-    speed?: number;
-    scrollEvent?: boolean;
-    clickEvent?: boolean;
-    title?: string;
-    offset?: number;
-    delay?: number;
-    exactSpot?: boolean;
-}
-
-export class ElementScrollEvent {
-    end: HTMLElement;
-    speed: number;
-    scrollEvent: boolean;
-    clickEvent: boolean;
-    title: string;
-    offset: number;
-    intId: number;
-    delay: number;
-    exactSpot: boolean;
-    [key: string]: any;
-
-
-    constructor( obj: ScrollObj ) {
+"use strict";
+var ElementScrollEvent = (function () {
+    function ElementScrollEvent(obj) {
         this.isEnd(obj.end);
         this.end = obj.end;
         this.speed = obj.speed ? obj.speed : 25;
@@ -34,28 +12,26 @@ export class ElementScrollEvent {
         this.delay = obj.delay ? obj.delay : 0;
         this.exactSpot = obj.exactSpot ? obj.exactSpot : false;
     }
-
-    set(lab: string, val:number) {
+    ElementScrollEvent.prototype.set = function (lab, val) {
         this[lab] = val;
-    }
-
-    stop() {
+    };
+    ElementScrollEvent.prototype.stop = function () {
         if (this.exactSpot) {
             window.scroll(0, window.scrollY + this.end.getBoundingClientRect().top - this.offset);
         }
-
         window.clearInterval(this.intId);
-    }
-
-    event() {
+    };
+    ElementScrollEvent.prototype.event = function () {
         window.clearInterval(this.intId);
-    }
-
-    private isEnd(end:any) {
+    };
+    ElementScrollEvent.prototype.isEnd = function (end) {
         if (!(end instanceof HTMLElement)) {
             alert("Your end point does not exist");
-        } else {
+        }
+        else {
             return true;
         }
-    }
-}
+    };
+    return ElementScrollEvent;
+}());
+exports.ElementScrollEvent = ElementScrollEvent;
