@@ -30,12 +30,10 @@
     "rimraf": "^2.6.1",
     "rollup": "^0.41.6",
     "rxjs": "^5.2.0",
-    "zone.js": "^0.7.8"
-  },
-  "devDependencies": {
     "gulp": "^3.9.1",
     "gulp-typescript": "^3.1.6",
-    "typescript": "^2.2.1"
+    "typescript": "^2.2.1",
+    "zone.js": "^0.7.8"
   },
   "peerDependencies": {
     "@angular/core": "^2.4.10"
