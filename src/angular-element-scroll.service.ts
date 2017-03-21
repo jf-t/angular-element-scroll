@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, NgZone } from '@angular/core';
 
 import { ElementScrollEvent } from './angular-element-scroll-event';
 
@@ -6,7 +6,9 @@ import { ElementScrollEvent } from './angular-element-scroll-event';
 export class ElementScrollService {
     events: Object;
 
-    constructor() {
+    constructor(
+        private zone: NgZone
+    ) {
         this.events = {};
     }
 
@@ -80,8 +82,10 @@ export class ElementScrollService {
         if (event.clickEvent) {
             document.addEventListener('click', event.event.bind(event));
         }
+        this.zone.runOutsideAngular(() => {
+            this.interval(0, change, endHeight - event.offset, down);
+        });
 
-        this.interval(0, change, endHeight - event.offset, down);
     }
 
     private interval (scrollY: number, change: number, diff:number, down:boolean) {
@@ -106,13 +110,15 @@ export class ElementScrollService {
     }
 
     private stopEvent(event: ElementScrollEvent) {
-        event.stop();
-        if (event.scrollEvent) {
-            document.removeEventListener('mousewheel', event.event.bind(event));
-        }
-        if (event.clickEvent) {
-            document.removeEventListener('click', event.event.bind(event));
-        }
+        this.zone.runOutsideAngular(() => {
+            event.stop();
+            if (event.scrollEvent) {
+                document.removeEventListener('mousewheel', event.event.bind(event));
+            }
+            if (event.clickEvent) {
+                document.removeEventListener('click', event.event.bind(event));
+            }
+        })
     }
 
     // private eventsIndex(event: ElementScrollEvent) {
