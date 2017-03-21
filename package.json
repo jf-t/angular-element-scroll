@@ -8,7 +8,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "clean": "rimraf bundle",
     "bundle": "clean && rollup -c rollup.conf.js",
-    "postpublish": "gulp && npm run bundle"
+    "postinstall": "gulp && npm run bundle"
   },
   "repository": {
     "type": "git",
