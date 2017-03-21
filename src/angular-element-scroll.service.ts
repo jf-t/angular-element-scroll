@@ -1,4 +1,4 @@
-import { Injectable, NgZone } from '@angular/core';
+import { Injectable } from '@angular/core';
 
 import { ElementScrollEvent } from './angular-element-scroll-event';
 
@@ -6,9 +6,7 @@ import { ElementScrollEvent } from './angular-element-scroll-event';
 export class ElementScrollService {
     events: Object;
 
-    constructor(
-        private zone: NgZone
-    ) {
+    constructor() {
         this.events = {};
     }
 
@@ -58,60 +56,63 @@ export class ElementScrollService {
 
 
     private runEvent(event: ElementScrollEvent) {
-        this.zone.runOutsideAngular(() => {
-            if (event.end.getBoundingClientRect().top === 0) {
-                this.runDelay(event);
-                return false;
-            }
+        if (event.end.getBoundingClientRect().top === 0) {
+            this.runDelay(event);
+            return false;
+        }
 
-            let endHeight = event.end.getBoundingClientRect().top;
-            let change = (event.speed);
+        let endHeight = event.end.getBoundingClientRect().top;
+        let change = (event.speed);
 
-            //  gets if page needs to go up or down
-            let down: boolean;
-            if (endHeight > 0) {
-                down = true;
-            } else {
-                change *= -1;
-                down = false;
-            }
+        //  gets if page needs to go up or down
+        let down: boolean;
+        if (endHeight > 0) {
+            down = true;
+        } else {
+            change *= -1;
+            down = false;
+        }
 
-            if (event.scrollEvent) {
-                document.addEventListener('mousewheel', event.event.bind(event));
-            }
+        if (event.scrollEvent) {
+            document.addEventListener('mousewheel', event.event.bind(event));
+        }
 
-            if (event.clickEvent) {
-                document.addEventListener('click', event.event.bind(event));
-            }
+        if (event.clickEvent) {
+            document.addEventListener('click', event.event.bind(event));
+        }
 
-            let scrollY = 0;
-            event.intId = window.setInterval(() => {
-                window.scroll(0, window.scrollY + change);
-                scrollY += change;
+        this.interval(0, change, endHeight - event.offset, down);
+    }
 
-                if (down) {
-                    if (scrollY >= (endHeight - event.offset)) {
-                        this.stopEvent(event);
-                    }
+    private interval (scrollY: number, change: number, diff:number, down:boolean) {
+        let intId = setTimeout(() => {
+            window.scroll(0, window.scrollY + change);
+            scrollY += change;
+
+            if (down) {
+                if (scrollY >= diff) {
+                    clearTimeout(intId);
                 } else {
-                    if (scrollY <= (endHeight - event.offset)) {
-                        this.stopEvent(event);
-                    }
+                    this.interval(scrollY, change, diff, down);
                 }
-            }, 10);
-        });
+            } else {
+                if (scrollY <= diff) {
+                    clearTimeout(intId);
+                } else {
+                    this.interval(scrollY, change, diff, down);
+                }
+            }
+        }, 10);
     }
 
     private stopEvent(event: ElementScrollEvent) {
-        this.zone.runOutsideAngular(() => {
-            event.stop();
-            if (event.scrollEvent) {
-                document.removeEventListener('mousewheel', event.event.bind(event));
-            }
-            if (event.clickEvent) {
-                document.removeEventListener('click', event.event.bind(event));
-            }
-        });
+        event.stop();
+        if (event.scrollEvent) {
+            document.removeEventListener('mousewheel', event.event.bind(event));
+        }
+        if (event.clickEvent) {
+            document.removeEventListener('click', event.event.bind(event));
+        }
     }
 
     // private eventsIndex(event: ElementScrollEvent) {
